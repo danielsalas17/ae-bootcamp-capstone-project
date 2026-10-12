@@ -4,6 +4,7 @@ import {
   getEntry,
   upsertEntry,
   deleteEntry,
+  isValidRating,
   type EntryUpdate,
 } from '../services/entryService';
 
@@ -29,9 +30,14 @@ entriesRouter.get<EntryParams>('/:imdbId', (req, res) => {
 
 entriesRouter.put<EntryParams>('/:imdbId', (req, res) => {
   const update = req.body as EntryUpdate;
+  if ('rating' in update && !isValidRating(update.rating)) {
+    res.status(400).json({ error: 'rating must be null or a multiple of 0.5 between 0 and 5' });
+    return;
+  }
   const entry = upsertEntry(req.params.userId, req.params.imdbId, update);
   res.json(entry);
 });
+
 
 entriesRouter.delete<EntryParams>('/:imdbId', (req, res) => {
   const deleted = deleteEntry(req.params.userId, req.params.imdbId);

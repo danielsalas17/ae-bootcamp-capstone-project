@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { getMovieDetails, type MovieDetails as MovieDetailsDto } from "@/lib/api";
-import { Button } from "@/components/ui/button";
+import {
+  getMovieDetails,
+  type MovieDetails as MovieDetailsDto,
+} from "@/lib/api";
 
 interface MovieDetailsProps {
   tmdbId: number;
-  onBack: () => void;
 }
 
-export function MovieDetails({ tmdbId, onBack }: MovieDetailsProps) {
+export function MovieDetails({ tmdbId }: MovieDetailsProps) {
   const [details, setDetails] = useState<MovieDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -45,10 +46,6 @@ export function MovieDetails({ tmdbId, onBack }: MovieDetailsProps) {
       className="flex w-full max-w-lg flex-col gap-4 text-left"
       aria-label="Movie details"
     >
-      <Button type="button" variant="ghost" onClick={onBack}>
-        ← Back to results
-      </Button>
-
       {loading && <p className="text-muted-foreground text-sm">Loading...</p>}
 
       {error && (
@@ -82,3 +79,4 @@ export function MovieDetails({ tmdbId, onBack }: MovieDetailsProps) {
     </section>
   );
 }
+

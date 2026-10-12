@@ -3,6 +3,7 @@
 ## Context
 
 The frontend home page (`App.tsx`) has a static "Search movies" `Button` with no handler. The backend already integrates with two external movie APIs:
+
 - `movieService.ts` — OMDb-backed, used by the current `GET /api/movies/search` (title-only) and `GET /api/movies/:imdbId` (details) routes.
 - `tmdbService.ts` — TMDB-backed, currently only used by `popularMoviesService.ts` for `GET /api/movies/popular`.
 
@@ -11,10 +12,12 @@ The frontend home page (`App.tsx`) has a static "Search movies" `Button` with no
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Make "Search movies" functional end-to-end: button → inline input → results list → details view.
 - Route all search/details data through TMDB, consistent with `popular-movies`, instead of maintaining two different external movie APIs for similar purposes.
 
 **Non-Goals:**
+
 - Actor/director-aware search (resolving a person name to their filmography). TMDB's `/search/movie` only matches on title/keyword + optional year; combining that with cast/crew requires a separate `/search/person` + `/discover/movie` chain, deferred to a follow-up change.
 - Connecting search results to watch entries, ratings, notes, watchlist, favorites, or lists.
 - Removing `OMDB_API_KEY` or `movieService.ts` outright — left in place since entries/lists routes may still reference OMDb-style ids conceptually; only the `/search` and `/:imdbId`→`/:tmdbId` routes are rewired in this change.

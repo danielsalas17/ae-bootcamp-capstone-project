@@ -7,9 +7,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { MovieDetailsDialog } from "@/components/MovieDetailsDialog";
 
 export function MovieCarousel() {
   const [movies, setMovies] = useState<PopularMovie[]>([]);
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,23 +47,38 @@ export function MovieCarousel() {
               key={movie.id}
               className="basis-1/2 sm:basis-1/3 md:basis-1/4"
             >
-              <figure className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedMovieId(movie.id)}
+                className="flex w-full flex-col gap-2 text-left"
+              >
                 <img
                   src={movie.posterUrl}
                   alt={movie.title}
                   className="aspect-2/3 w-full rounded-md object-cover"
                 />
-                <figcaption className="text-sm">
-                  <p className="truncate font-medium">{movie.title}</p>
-                  <p className="text-muted-foreground">{movie.year}</p>
-                </figcaption>
-              </figure>
+                <span className="text-sm">
+                  <span className="block truncate font-medium">{movie.title}</span>
+                  <span className="text-muted-foreground block">{movie.year}</span>
+                </span>
+              </button>
             </CarouselItem>
           ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
+
+      <MovieDetailsDialog
+        movieId={selectedMovieId}
+        open={selectedMovieId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedMovieId(null);
+          }
+        }}
+      />
     </section>
   );
 }
+

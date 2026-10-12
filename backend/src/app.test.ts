@@ -47,14 +47,38 @@ describe('app', () => {
 
     const putRes = await request(app)
       .put(`/api/users/${userId}/entries/tt0111161`)
-      .send({ watched: true, rating: 10 });
+      .send({ watched: true, rating: 4.5 });
 
     expect(putRes.status).toBe(200);
     expect(putRes.body.watched).toBe(true);
-    expect(putRes.body.rating).toBe(10);
+    expect(putRes.body.rating).toBe(4.5);
 
     const listRes = await request(app).get(`/api/users/${userId}/entries`);
     expect(listRes.body).toHaveLength(1);
+  });
+
+  it('rejects a watch entry update with an out-of-range or misaligned rating', async () => {
+    const userRes = await request(app).post('/api/users').send({ username: 'dave' });
+    const userId = userRes.body.id;
+
+    for (const rating of [-1, 5.5, 3.25, 6]) {
+      const putRes = await request(app)
+        .put(`/api/users/${userId}/entries/tt0111161`)
+        .send({ rating });
+      expect(putRes.status).toBe(400);
+    }
+  });
+
+  it('accepts a null rating to clear it', async () => {
+    const userRes = await request(app).post('/api/users').send({ username: 'erin' });
+    const userId = userRes.body.id;
+
+    const putRes = await request(app)
+      .put(`/api/users/${userId}/entries/tt0111161`)
+      .send({ rating: null });
+
+    expect(putRes.status).toBe(200);
+    expect(putRes.body.rating).toBeNull();
   });
 
   it('creates a list and adds a movie to it for a valid user', async () => {

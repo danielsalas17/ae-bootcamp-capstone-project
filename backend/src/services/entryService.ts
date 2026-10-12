@@ -6,6 +6,20 @@ export type EntryUpdate = Partial<
   Pick<WatchEntry, 'watched' | 'rating' | 'notes' | 'watchlist' | 'favorite'>
 >;
 
+// Ratings are 0-5 in half-star steps; null means "no rating set".
+export function isValidRating(value: unknown): value is number | null {
+  if (value === null) {
+    return true;
+  }
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return false;
+  }
+  if (value < 0 || value > 5) {
+    return false;
+  }
+  return Number.isInteger(value * 2);
+}
+
 export function listEntriesForUser(userId: string): WatchEntry[] {
   const db = readDb();
   return db.entries.filter((e) => e.userId === userId);

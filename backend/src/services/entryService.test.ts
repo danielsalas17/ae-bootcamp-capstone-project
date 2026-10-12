@@ -1,7 +1,17 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { upsertEntry, getEntry, deleteEntry, listEntriesForUser } from './entryService';
+import { upsertEntry, getEntry, deleteEntry, listEntriesForUser, isValidRating } from './entryService';
+
+describe('isValidRating', () => {
+  it.each([0, 0.5, 5, null])('accepts %s', (value) => {
+    expect(isValidRating(value)).toBe(true);
+  });
+
+  it.each([-1, 5.5, 3.25, 6])('rejects %s', (value) => {
+    expect(isValidRating(value)).toBe(false);
+  });
+});
 
 describe('entryService', () => {
   let dbFilePath: string;

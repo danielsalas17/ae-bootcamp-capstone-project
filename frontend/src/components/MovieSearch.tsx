@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { searchMovies, type MovieSearchResult } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MovieDetails } from "@/components/MovieDetails";
+import { MovieDetailsDialog } from "@/components/MovieDetailsDialog";
 
 interface MovieSearchProps {
   onClose: () => void;
@@ -33,15 +33,6 @@ export function MovieSearch({ onClose }: MovieSearchProps) {
     } finally {
       setLoading(false);
     }
-  }
-
-  if (selectedMovieId !== null) {
-    return (
-      <MovieDetails
-        tmdbId={selectedMovieId}
-        onBack={() => setSelectedMovieId(null)}
-      />
-    );
   }
 
   return (
@@ -105,6 +96,17 @@ export function MovieSearch({ onClose }: MovieSearchProps) {
           ))}
         </ul>
       )}
+
+      <MovieDetailsDialog
+        movieId={selectedMovieId}
+        open={selectedMovieId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedMovieId(null);
+          }
+        }}
+      />
     </section>
   );
 }
+

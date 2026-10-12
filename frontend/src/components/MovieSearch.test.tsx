@@ -1,11 +1,29 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MovieSearch } from "./MovieSearch";
+import { CurrentUserProvider } from "@/hooks/useCurrentUser";
 import * as api from "@/lib/api";
 
+const CURRENT_USER = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+
+function renderMovieSearch(onClose: () => void) {
+  return render(
+    <CurrentUserProvider>
+      <MovieSearch onClose={onClose} />
+    </CurrentUserProvider>,
+  );
+}
+
 describe("MovieSearch", () => {
+  beforeEach(() => {
+    localStorage.setItem("letterboxd-clone:userId", CURRENT_USER.id);
+    vi.spyOn(api, "getUser").mockResolvedValue(CURRENT_USER);
+    vi.spyOn(api, "getEntry").mockResolvedValue(null);
+  });
+
   afterEach(() => {
+    localStorage.clear();
     vi.restoreAllMocks();
   });
 
@@ -15,7 +33,7 @@ describe("MovieSearch", () => {
       { id: 27205, title: "Inception", year: "2010", posterUrl: null },
     ]);
 
-    render(<MovieSearch onClose={vi.fn()} />);
+    renderMovieSearch(vi.fn());
 
     await user.type(screen.getByLabelText(/search by title/i), "inception");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
@@ -33,7 +51,7 @@ describe("MovieSearch", () => {
       }),
     );
 
-    render(<MovieSearch onClose={vi.fn()} />);
+    renderMovieSearch(vi.fn());
 
     await user.type(screen.getByLabelText(/search by title/i), "inception");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
@@ -50,7 +68,7 @@ describe("MovieSearch", () => {
     const user = userEvent.setup();
     vi.spyOn(api, "searchMovies").mockRejectedValue(new Error("network error"));
 
-    render(<MovieSearch onClose={vi.fn()} />);
+    renderMovieSearch(vi.fn());
 
     await user.type(screen.getByLabelText(/search by title/i), "inception");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
@@ -62,7 +80,7 @@ describe("MovieSearch", () => {
     const user = userEvent.setup();
     vi.spyOn(api, "searchMovies").mockResolvedValue([]);
 
-    render(<MovieSearch onClose={vi.fn()} />);
+    renderMovieSearch(vi.fn());
 
     await user.type(screen.getByLabelText(/search by title/i), "nonexistent");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
@@ -70,7 +88,7 @@ describe("MovieSearch", () => {
     expect(await screen.findByText(/no movies found/i)).toBeInTheDocument();
   });
 
-  it("opens movie details when a result is selected and can navigate back", async () => {
+  it("opens the details dialog when a result is selected, keeping the results list underneath", async () => {
     const user = userEvent.setup();
     vi.spyOn(api, "searchMovies").mockResolvedValue([
       { id: 27205, title: "Inception", year: "2010", posterUrl: null },
@@ -86,7 +104,7 @@ describe("MovieSearch", () => {
       rating: 8.4,
     });
 
-    render(<MovieSearch onClose={vi.fn()} />);
+    renderMovieSearch(vi.fn());
 
     await user.type(screen.getByLabelText(/search by title/i), "inception");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
@@ -97,16 +115,21 @@ describe("MovieSearch", () => {
       await screen.findByText(/thief who steals corporate secrets/i),
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /back to results/i }));
+    await user.keyboard("{Escape}");
 
-    expect(await screen.findByText("Inception")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.queryByText(/thief who steals corporate secrets/i),
+      ).not.toBeInTheDocument(),
+    );
+    expect(screen.getByRole("button", { name: /inception/i })).toBeInTheDocument();
   });
 
   it("calls onClose when the close button is clicked", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
 
-    render(<MovieSearch onClose={onClose} />);
+    renderMovieSearch(onClose);
 
     await user.click(screen.getByRole("button", { name: /close/i }));
 
