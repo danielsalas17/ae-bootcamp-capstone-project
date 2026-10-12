@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { searchMovies, getMovieDetails } from '../services/movieService';
+import { searchMovies, getMovieDetails } from '../services/movieSearchService';
 import { getPopularMovies } from '../services/popularMoviesService';
 
 export const moviesRouter = Router();
 
-// Must be registered before '/:imdbId' so 'popular' isn't matched as an imdbId.
+// Must be registered before '/:tmdbId' so 'popular' isn't matched as a tmdbId.
 moviesRouter.get('/popular', async (_req, res, next) => {
   try {
     const movies = await getPopularMovies();
@@ -28,9 +28,9 @@ moviesRouter.get('/search', async (req, res, next) => {
   }
 });
 
-moviesRouter.get('/:imdbId', async (req, res, next) => {
+moviesRouter.get('/:tmdbId', async (req, res, next) => {
   try {
-    const movie = await getMovieDetails(req.params.imdbId);
+    const movie = await getMovieDetails(req.params.tmdbId);
     if (!movie) {
       res.status(404).json({ error: 'Movie not found' });
       return;
