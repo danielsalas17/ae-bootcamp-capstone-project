@@ -5,7 +5,11 @@ import { MovieCarousel } from "./MovieCarousel";
 import { CurrentUserProvider } from "@/hooks/useCurrentUser";
 import * as api from "@/lib/api";
 
-const CURRENT_USER = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+const CURRENT_USER = {
+  id: "user-1",
+  username: "alice",
+  createdAt: "2024-01-01T00:00:00.000Z",
+};
 
 function renderCarousel() {
   return render(

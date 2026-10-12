@@ -65,4 +65,3 @@ describe("MovieDetails", () => {
     expect(await screen.findByRole("alert")).toBeInTheDocument();
   });
 });
-

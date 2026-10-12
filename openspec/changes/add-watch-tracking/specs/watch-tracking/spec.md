@@ -7,6 +7,7 @@ Lets the current user record personal tracking data for any movie — whether th
 ## ADDED Requirements
 
 ### Requirement: Mark a movie as watched
+
 The system SHALL let the current user toggle a "watched" mark for the movie shown in the details dialog, independent of rating or review, and SHALL persist it via the existing per-user watch-entry backend.
 
 #### Scenario: Marking a movie watched
@@ -20,6 +21,7 @@ The system SHALL let the current user toggle a "watched" mark for the movie show
 - **THEN** the system saves `watched: false` for that user and movie
 
 ### Requirement: Rate a movie from 0 to 5 stars in half-star steps
+
 The system SHALL let the current user optionally set a star rating for the movie shown in the details dialog, in increments of 0.5 stars from 0 to 5 inclusive, and SHALL reject any other value.
 
 #### Scenario: Setting a half-star rating
@@ -38,6 +40,7 @@ The system SHALL let the current user optionally set a star rating for the movie
 - **THEN** the system returns `400` with an error message and does not save the entry
 
 ### Requirement: Add an optional review
+
 The system SHALL let the current user optionally write and save free-text review notes for the movie shown in the details dialog, independent of the watched mark and rating.
 
 #### Scenario: Saving a review
@@ -51,6 +54,7 @@ The system SHALL let the current user optionally write and save free-text review
 - **THEN** the system does not require review text and saves the watched mark and/or rating, if any, on their own
 
 ### Requirement: Pre-fill existing tracking data when reopening the dialog
+
 The system SHALL load any existing watched mark, rating, and review for the current user and selected movie when the details dialog opens, and SHALL default to unwatched, no rating, and an empty review when none exists.
 
 #### Scenario: Reopening a previously tracked movie
@@ -64,6 +68,7 @@ The system SHALL load any existing watched mark, rating, and review for the curr
 - **THEN** the dialog shows the watched toggle off, no rating selected, and an empty review field
 
 ### Requirement: Scope tracking data per user
+
 The system SHALL keep each user's watched mark, rating, and review for a given movie independent of every other user's data for that same movie.
 
 #### Scenario: Two users track the same movie independently

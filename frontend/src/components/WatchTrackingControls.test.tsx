@@ -70,7 +70,9 @@ describe("WatchTrackingControls", () => {
     const user = userEvent.setup();
 
     render(<WatchTrackingControls userId="user-1" movieId={27205} />);
-    await user.click(await screen.findByRole("button", { name: "Rate 4 stars" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Rate 4 stars" }),
+    );
 
     expect(upsertSpy).toHaveBeenCalledWith("user-1", 27205, { rating: 4 });
   });
@@ -92,7 +94,9 @@ describe("WatchTrackingControls", () => {
     await user.click(screen.getByRole("button", { name: /save review/i }));
 
     await waitFor(() =>
-      expect(upsertSpy).toHaveBeenCalledWith("user-1", 27205, { notes: "Great movie" }),
+      expect(upsertSpy).toHaveBeenCalledWith("user-1", 27205, {
+        notes: "Great movie",
+      }),
     );
     expect(upsertSpy).toHaveBeenCalledTimes(1);
   });

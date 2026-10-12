@@ -4,7 +4,11 @@ import { MovieDetailsDialog } from "./MovieDetailsDialog";
 import { CurrentUserProvider } from "@/hooks/useCurrentUser";
 import * as api from "@/lib/api";
 
-const CURRENT_USER = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+const CURRENT_USER = {
+  id: "user-1",
+  username: "alice",
+  createdAt: "2024-01-01T00:00:00.000Z",
+};
 
 function renderDialog(props: Parameters<typeof MovieDetailsDialog>[0]) {
   return render(
@@ -51,11 +55,12 @@ describe("MovieDetailsDialog", () => {
   });
 
   it("shows an error message when the details request fails", async () => {
-    vi.spyOn(api, "getMovieDetails").mockRejectedValue(new Error("network error"));
+    vi.spyOn(api, "getMovieDetails").mockRejectedValue(
+      new Error("network error"),
+    );
 
     renderDialog({ movieId: 27205, open: true, onOpenChange: vi.fn() });
 
     expect(await screen.findByRole("alert")).toBeInTheDocument();
   });
 });
-

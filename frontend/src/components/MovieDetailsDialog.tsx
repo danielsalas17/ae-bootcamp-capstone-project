@@ -1,10 +1,6 @@
 import { MovieDetails } from "@/components/MovieDetails";
 import { WatchTrackingControls } from "@/components/WatchTrackingControls";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface MovieDetailsDialogProps {
@@ -27,11 +23,12 @@ export function MovieDetailsDialog({
         {movieId !== null && (
           <>
             <MovieDetails tmdbId={movieId} />
-            {user && <WatchTrackingControls userId={user.id} movieId={movieId} />}
+            {user && (
+              <WatchTrackingControls userId={user.id} movieId={movieId} />
+            )}
           </>
         )}
       </DialogContent>
     </Dialog>
   );
 }
-

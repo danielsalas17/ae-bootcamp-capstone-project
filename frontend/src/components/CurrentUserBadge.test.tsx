@@ -25,7 +25,11 @@ describe("CurrentUserBadge", () => {
   it("shows the username and logs out when the switch user control is clicked", async () => {
     const logout = vi.fn();
     vi.spyOn(useCurrentUserModule, "useCurrentUser").mockReturnValue({
-      user: { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" },
+      user: {
+        id: "user-1",
+        username: "alice",
+        createdAt: "2024-01-01T00:00:00.000Z",
+      },
       isLoading: false,
       login: vi.fn(),
       logout,

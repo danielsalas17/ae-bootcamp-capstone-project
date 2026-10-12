@@ -58,8 +58,12 @@ export function MovieCarousel() {
                   className="aspect-2/3 w-full rounded-md object-cover"
                 />
                 <span className="text-sm">
-                  <span className="block truncate font-medium">{movie.title}</span>
-                  <span className="text-muted-foreground block">{movie.year}</span>
+                  <span className="block truncate font-medium">
+                    {movie.title}
+                  </span>
+                  <span className="text-muted-foreground block">
+                    {movie.year}
+                  </span>
                 </span>
               </button>
             </CarouselItem>
@@ -81,4 +85,3 @@ export function MovieCarousel() {
     </section>
   );
 }
-

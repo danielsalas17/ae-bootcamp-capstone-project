@@ -15,7 +15,11 @@ describe("CurrentUserProvider / useCurrentUser", () => {
   });
 
   it("restores a valid stored user on load", async () => {
-    const user = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+    const user = {
+      id: "user-1",
+      username: "alice",
+      createdAt: "2024-01-01T00:00:00.000Z",
+    };
     localStorage.setItem(STORAGE_KEY, user.id);
     vi.spyOn(api, "getUser").mockResolvedValue(user);
 
@@ -29,7 +33,9 @@ describe("CurrentUserProvider / useCurrentUser", () => {
 
   it("clears an invalid stored user id", async () => {
     localStorage.setItem(STORAGE_KEY, "stale-id");
-    vi.spyOn(api, "getUser").mockRejectedValue(new Error("Failed to fetch user: 404"));
+    vi.spyOn(api, "getUser").mockRejectedValue(
+      new Error("Failed to fetch user: 404"),
+    );
 
     const { result } = renderHook(() => useCurrentUser(), {
       wrapper: CurrentUserProvider,
@@ -41,7 +47,11 @@ describe("CurrentUserProvider / useCurrentUser", () => {
   });
 
   it("logs in and persists the user id", async () => {
-    const user = { id: "user-2", username: "bob", createdAt: "2024-01-01T00:00:00.000Z" };
+    const user = {
+      id: "user-2",
+      username: "bob",
+      createdAt: "2024-01-01T00:00:00.000Z",
+    };
     vi.spyOn(api, "createOrGetUser").mockResolvedValue(user);
 
     const { result } = renderHook(() => useCurrentUser(), {
@@ -59,7 +69,11 @@ describe("CurrentUserProvider / useCurrentUser", () => {
   });
 
   it("logs out and clears the stored user id", async () => {
-    const user = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+    const user = {
+      id: "user-1",
+      username: "alice",
+      createdAt: "2024-01-01T00:00:00.000Z",
+    };
     localStorage.setItem(STORAGE_KEY, user.id);
     vi.spyOn(api, "getUser").mockResolvedValue(user);
 

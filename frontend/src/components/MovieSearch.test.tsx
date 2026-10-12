@@ -5,7 +5,11 @@ import { MovieSearch } from "./MovieSearch";
 import { CurrentUserProvider } from "@/hooks/useCurrentUser";
 import * as api from "@/lib/api";
 
-const CURRENT_USER = { id: "user-1", username: "alice", createdAt: "2024-01-01T00:00:00.000Z" };
+const CURRENT_USER = {
+  id: "user-1",
+  username: "alice",
+  createdAt: "2024-01-01T00:00:00.000Z",
+};
 
 function renderMovieSearch(onClose: () => void) {
   return render(
@@ -122,7 +126,9 @@ describe("MovieSearch", () => {
         screen.queryByText(/thief who steals corporate secrets/i),
       ).not.toBeInTheDocument(),
     );
-    expect(screen.getByRole("button", { name: /inception/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /inception/i }),
+    ).toBeInTheDocument();
   });
 
   it("calls onClose when the close button is clicked", async () => {

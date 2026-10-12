@@ -79,4 +79,3 @@ export function MovieDetails({ tmdbId }: MovieDetailsProps) {
     </section>
   );
 }
-

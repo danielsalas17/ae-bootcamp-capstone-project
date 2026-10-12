@@ -13,11 +13,13 @@ See [proposal.md](./proposal.md) for motivation. Relevant current state:
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Minimal, local-only username login that unblocks per-user data without building real auth.
 - One shared details dialog, opened the same way from both search results and the carousel.
 - Make `rating` a well-defined, validated scale (0-5, 0.5 steps) going forward.
 
 **Non-Goals:**
+
 - Any password/security hardening beyond "trust the client-supplied username exists as a record" (already the documented Auth Model).
 - Renaming `imdbId` to a more accurate name across the whole backend (entries, lists, types) — out of scope; this change only documents the mismatch and reuses the field as a generic string movie id.
 - Watchlist/favorite UI (fields already exist on `WatchEntry` but aren't touched here).

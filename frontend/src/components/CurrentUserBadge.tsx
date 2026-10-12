@@ -10,7 +10,9 @@ export function CurrentUserBadge() {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="text-muted-foreground">Logged in as {user.username}</span>
+      <span className="text-muted-foreground">
+        Logged in as {user.username}
+      </span>
       <Button type="button" variant="ghost" onClick={logout}>
         Switch user
       </Button>
