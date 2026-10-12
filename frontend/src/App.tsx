@@ -4,6 +4,7 @@ import { MovieCarousel } from "@/components/MovieCarousel";
 import { MovieSearch } from "@/components/MovieSearch";
 import { LoginScreen } from "@/components/LoginScreen";
 import { CurrentUserBadge } from "@/components/CurrentUserBadge";
+import { RecentlyWatched } from "@/components/RecentlyWatched";
 import { CurrentUserProvider, useCurrentUser } from "@/hooks/useCurrentUser";
 
 function AppContent() {
@@ -36,6 +37,7 @@ function AppContent() {
         <Button onClick={() => setIsSearchOpen(true)}>Search movies</Button>
       )}
       <MovieCarousel />
+      <RecentlyWatched userId={user.id} />
     </main>
   );
 }

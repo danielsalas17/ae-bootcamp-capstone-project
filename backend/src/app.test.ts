@@ -52,9 +52,11 @@ describe('app', () => {
     expect(putRes.status).toBe(200);
     expect(putRes.body.watched).toBe(true);
     expect(putRes.body.rating).toBe(4.5);
+    expect(putRes.body.watchedAt).not.toBeNull();
 
     const listRes = await request(app).get(`/api/users/${userId}/entries`);
     expect(listRes.body).toHaveLength(1);
+    expect(listRes.body[0].watchedAt).toBe(putRes.body.watchedAt);
   });
 
   it('rejects a watch entry update with an out-of-range or misaligned rating', async () => {

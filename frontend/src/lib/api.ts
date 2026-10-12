@@ -35,6 +35,7 @@ export interface WatchEntry {
   userId: string;
   imdbId: string;
   watched: boolean;
+  watchedAt: string | null;
   rating: number | null;
   notes: string;
   watchlist: boolean;
@@ -123,6 +124,16 @@ export async function getEntry(
   }
 
   return (await response.json()) as WatchEntry;
+}
+
+export async function listEntriesForUser(userId: string): Promise<WatchEntry[]> {
+  const response = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(userId)}/entries`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch watch entries: ${response.status}`);
+  }
+
+  return (await response.json()) as WatchEntry[];
 }
 
 export async function upsertEntry(

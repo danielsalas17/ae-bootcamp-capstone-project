@@ -9,6 +9,7 @@ export interface WatchEntry {
   userId: string;
   imdbId: string;
   watched: boolean;
+  watchedAt: string | null;
   rating: number | null;
   notes: string;
   watchlist: boolean;

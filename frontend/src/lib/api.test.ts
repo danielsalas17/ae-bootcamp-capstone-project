@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { getPopularMovies, searchMovies, getMovieDetails, createOrGetUser, getUser, getEntry, upsertEntry } from './api'
+import { getPopularMovies, searchMovies, getMovieDetails, createOrGetUser, getUser, getEntry, listEntriesForUser, upsertEntry } from './api'
 
 describe('getPopularMovies', () => {
   const originalFetch = global.fetch
@@ -208,6 +208,7 @@ describe('getEntry', () => {
       userId: 'user-1',
       imdbId: '27205',
       watched: true,
+      watchedAt: '2024-01-01T00:00:00.000Z',
       rating: 4.5,
       notes: 'Great movie',
       watchlist: false,
@@ -252,6 +253,53 @@ describe('getEntry', () => {
   })
 })
 
+describe('listEntriesForUser', () => {
+  const originalFetch = global.fetch
+
+  afterEach(() => {
+    global.fetch = originalFetch
+    vi.restoreAllMocks()
+  })
+
+  it('requests the entries for a user and returns parsed entries', async () => {
+    const entries = [
+      {
+        id: 'entry-1',
+        userId: 'user-1',
+        imdbId: '27205',
+        watched: true,
+        watchedAt: '2024-01-01T00:00:00.000Z',
+        rating: 4.5,
+        notes: '',
+        watchlist: false,
+        favorite: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      },
+    ]
+    const mockedFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => entries,
+    })
+    global.fetch = mockedFetch as unknown as typeof fetch
+
+    const result = await listEntriesForUser('user-1')
+
+    expect(mockedFetch).toHaveBeenCalledWith('http://localhost:4000/api/users/user-1/entries')
+    expect(result).toEqual(entries)
+  })
+
+  it('throws when the response is not ok', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({}),
+    }) as unknown as typeof fetch
+
+    await expect(listEntriesForUser('user-1')).rejects.toThrow('Failed to fetch watch entries: 500')
+  })
+})
+
 describe('upsertEntry', () => {
   const originalFetch = global.fetch
 
@@ -266,6 +314,7 @@ describe('upsertEntry', () => {
       userId: 'user-1',
       imdbId: '27205',
       watched: true,
+      watchedAt: '2024-01-01T00:00:00.000Z',
       rating: 4.5,
       notes: '',
       watchlist: false,

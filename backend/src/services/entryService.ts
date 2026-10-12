@@ -37,7 +37,12 @@ export function upsertEntry(userId: string, imdbId: string, update: EntryUpdate)
   const existing = db.entries.find((e) => e.userId === userId && e.imdbId === imdbId);
 
   if (existing) {
+    const wasWatched = existing.watched;
     Object.assign(existing, update, { updatedAt: now });
+    // watchedAt only moves on a false -> true transition of `watched`, not on unrelated edits.
+    if (update.watched === true && !wasWatched) {
+      existing.watchedAt = now;
+    }
     writeDb(db);
     return existing;
   }
@@ -47,6 +52,7 @@ export function upsertEntry(userId: string, imdbId: string, update: EntryUpdate)
     userId,
     imdbId,
     watched: false,
+    watchedAt: null,
     rating: null,
     notes: '',
     watchlist: false,
@@ -55,6 +61,9 @@ export function upsertEntry(userId: string, imdbId: string, update: EntryUpdate)
     updatedAt: now,
     ...update,
   };
+  if (entry.watched) {
+    entry.watchedAt = now;
+  }
   db.entries.push(entry);
   writeDb(db);
   return entry;

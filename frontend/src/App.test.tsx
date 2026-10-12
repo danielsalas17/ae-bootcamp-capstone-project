@@ -28,6 +28,7 @@ describe("App", () => {
     localStorage.setItem("letterboxd-clone:userId", CURRENT_USER.id);
     vi.spyOn(api, "getUser").mockResolvedValue(CURRENT_USER);
     vi.spyOn(api, "getPopularMovies").mockResolvedValue([]);
+    vi.spyOn(api, "listEntriesForUser").mockResolvedValue([]);
 
     render(<App />);
 
@@ -44,6 +45,7 @@ describe("App", () => {
     localStorage.setItem("letterboxd-clone:userId", CURRENT_USER.id);
     vi.spyOn(api, "getUser").mockResolvedValue(CURRENT_USER);
     vi.spyOn(api, "getPopularMovies").mockResolvedValue([]);
+    vi.spyOn(api, "listEntriesForUser").mockResolvedValue([]);
     const user = userEvent.setup();
 
     render(<App />);

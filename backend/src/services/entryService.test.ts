@@ -60,4 +60,42 @@ describe('entryService', () => {
     expect(listEntriesForUser('user-1')).toHaveLength(1);
     expect(listEntriesForUser('user-2')).toHaveLength(1);
   });
+
+  it('sets watchedAt the first time an entry is marked watched', () => {
+    const entry = upsertEntry('user-1', 'tt0111161', { watched: true });
+
+    expect(entry.watched).toBe(true);
+    expect(entry.watchedAt).not.toBeNull();
+  });
+
+  it('defaults watchedAt to null when an entry is not watched', () => {
+    const entry = upsertEntry('user-1', 'tt0111161', { favorite: true });
+
+    expect(entry.watched).toBe(false);
+    expect(entry.watchedAt).toBeNull();
+  });
+
+  it('does not change watchedAt when editing notes or rating on an already-watched entry', () => {
+    const watched = upsertEntry('user-1', 'tt0111161', { watched: true });
+    const updated = upsertEntry('user-1', 'tt0111161', { notes: 'Great movie', rating: 4.5 });
+
+    expect(updated.watchedAt).toBe(watched.watchedAt);
+  });
+
+  it('refreshes watchedAt when re-marking as watched after unmarking', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+    const firstWatch = upsertEntry('user-1', 'tt0111161', { watched: true });
+
+    jest.setSystemTime(new Date('2026-01-02T00:00:00.000Z'));
+    const unmarked = upsertEntry('user-1', 'tt0111161', { watched: false });
+
+    jest.setSystemTime(new Date('2026-01-03T00:00:00.000Z'));
+    const rewatched = upsertEntry('user-1', 'tt0111161', { watched: true });
+
+    jest.useRealTimers();
+
+    expect(unmarked.watchedAt).toBe(firstWatch.watchedAt);
+    expect(rewatched.watchedAt).not.toBeNull();
+    expect(rewatched.watchedAt).not.toBe(firstWatch.watchedAt);
+  });
 });

@@ -9,6 +9,7 @@ const BASE_ENTRY = {
   userId: "user-1",
   imdbId: "27205",
   watched: false,
+  watchedAt: null,
   rating: null,
   notes: "",
   watchlist: false,
