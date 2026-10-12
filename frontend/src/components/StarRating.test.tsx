@@ -66,4 +66,29 @@ describe("StarRating", () => {
 
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it("shows a preview fill when hovering a star position", async () => {
+    const user = userEvent.setup();
+
+    const { container } = render(
+      <StarRating value={null} onChange={vi.fn()} />,
+    );
+    await user.hover(screen.getByRole("button", { name: "Rate 4 stars" }));
+
+    expect(container.querySelector(".opacity-70")).toBeInTheDocument();
+  });
+
+  it("clears the preview fill when the pointer leaves the control", async () => {
+    const user = userEvent.setup();
+
+    const { container } = render(
+      <StarRating value={null} onChange={vi.fn()} />,
+    );
+    await user.hover(screen.getByRole("button", { name: "Rate 4 stars" }));
+    expect(container.querySelector(".opacity-70")).toBeInTheDocument();
+
+    await user.unhover(screen.getByRole("button", { name: "Rate 4 stars" }));
+
+    expect(container.querySelector(".opacity-70")).not.toBeInTheDocument();
+  });
 });

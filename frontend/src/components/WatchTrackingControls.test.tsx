@@ -28,7 +28,9 @@ describe("WatchTrackingControls", () => {
 
     render(<WatchTrackingControls userId="user-1" movieId={27205} />);
 
-    expect(await screen.findByLabelText(/watched/i)).not.toBeChecked();
+    expect(
+      await screen.findByRole("switch", { name: /watched/i }),
+    ).not.toBeChecked();
     expect(screen.getByText(/no rating/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/review/i)).toHaveValue("");
   });
@@ -43,7 +45,9 @@ describe("WatchTrackingControls", () => {
 
     render(<WatchTrackingControls userId="user-1" movieId={27205} />);
 
-    expect(await screen.findByLabelText(/watched/i)).toBeChecked();
+    expect(
+      await screen.findByRole("switch", { name: /watched/i }),
+    ).toBeChecked();
     expect(screen.getByText("3.5 / 5")).toBeInTheDocument();
     expect(screen.getByLabelText(/review/i)).toHaveValue("Loved it");
   });
@@ -57,7 +61,7 @@ describe("WatchTrackingControls", () => {
     const user = userEvent.setup();
 
     render(<WatchTrackingControls userId="user-1" movieId={27205} />);
-    await user.click(await screen.findByLabelText(/watched/i));
+    await user.click(await screen.findByRole("switch", { name: /watched/i }));
 
     expect(upsertSpy).toHaveBeenCalledWith("user-1", 27205, { watched: true });
   });

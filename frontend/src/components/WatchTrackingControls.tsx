@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getEntry, upsertEntry, type WatchEntry } from "@/lib/api";
 import { StarRating } from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 interface WatchTrackingControlsProps {
   userId: string;
@@ -94,10 +96,9 @@ export function WatchTrackingControls({
   return (
     <div className="flex flex-col gap-3 border-t pt-3">
       <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
+        <Switch
           checked={tracking.watched}
-          onChange={(event) => handleWatchedChange(event.target.checked)}
+          onCheckedChange={handleWatchedChange}
         />
         Watched
       </label>
@@ -108,9 +109,8 @@ export function WatchTrackingControls({
         <label className="text-sm font-medium" htmlFor="review">
           Review
         </label>
-        <textarea
+        <Textarea
           id="review"
-          className="min-h-20 w-full rounded-md border p-2 text-sm"
           value={reviewDraft}
           onChange={(event) => setReviewDraft(event.target.value)}
           onBlur={() => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ClapperboardIcon } from "lucide-react";
 import {
   listEntriesForUser,
   getMovieDetails,
@@ -6,6 +7,12 @@ import {
   type WatchEntry,
 } from "@/lib/api";
 import { MovieDetailsDialog } from "@/components/MovieDetailsDialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  movieCardInteractiveClasses,
+  MoviePosterFallback,
+} from "@/components/movie-card";
+import { cn } from "@/lib/utils";
 
 interface RecentlyWatchedProps {
   userId: string;
@@ -15,6 +22,8 @@ interface TimelineItem {
   entry: WatchEntry;
   movie: MovieDetails;
 }
+
+const SKELETON_ROW_COUNT = 2;
 
 function watchedOrderKey(entry: WatchEntry): string {
   return entry.watchedAt ?? entry.updatedAt;
@@ -30,10 +39,12 @@ function formatWatchedDate(entry: WatchEntry): string {
 
 export function RecentlyWatched({ userId }: RecentlyWatchedProps) {
   const [items, setItems] = useState<TimelineItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
 
     listEntriesForUser(userId)
       .then(async (entries) => {
@@ -73,6 +84,11 @@ export function RecentlyWatched({ userId }: RecentlyWatchedProps) {
         if (!cancelled) {
           setItems([]);
         }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
       });
 
     return () => {
@@ -81,12 +97,42 @@ export function RecentlyWatched({ userId }: RecentlyWatchedProps) {
   }, [userId]);
 
   return (
-    <section className="w-full max-w-4xl" aria-label="Recently watched">
-      <h2 className="mb-4 text-xl font-semibold">Recently watched</h2>
-      {items.length === 0 ? (
-        <p className="text-muted-foreground text-sm">
-          You haven&apos;t marked any movies as watched yet.
-        </p>
+    <section className="w-full" aria-label="Recently watched">
+      <h2 className="mb-4 text-xl font-semibold tracking-tight md:text-2xl">
+        Recently watched
+      </h2>
+      {loading ? (
+        <ol
+          className="relative flex flex-col gap-6 border-l pl-6"
+          aria-busy="true"
+        >
+          {Array.from({ length: SKELETON_ROW_COUNT }).map((_, index) => (
+            <li key={index} className="relative">
+              <span
+                aria-hidden="true"
+                className="bg-muted absolute top-1 -left-7.25 size-3 rounded-full"
+              />
+              <div className="flex items-start gap-4 p-2">
+                <Skeleton className="aspect-2/3 w-16 shrink-0 rounded-md" />
+                <div className="flex flex-1 flex-col gap-2">
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-3 w-1/3" />
+                  <Skeleton className="h-3 w-1/4" />
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : items.length === 0 ? (
+        <div className="flex flex-col items-center gap-2 py-12 text-center">
+          <ClapperboardIcon
+            className="text-muted-foreground size-8"
+            aria-hidden="true"
+          />
+          <p className="text-muted-foreground text-sm">
+            You haven&apos;t marked any movies as watched yet.
+          </p>
+        </div>
       ) : (
         <ol className="relative flex flex-col gap-6 border-l pl-6">
           {items.map(({ entry, movie }) => (
@@ -98,14 +144,19 @@ export function RecentlyWatched({ userId }: RecentlyWatchedProps) {
               <button
                 type="button"
                 onClick={() => setSelectedMovieId(movie.id)}
-                className="flex w-full items-start gap-4 text-left"
+                className={cn(
+                  "flex w-full items-start gap-4 p-2 text-left",
+                  movieCardInteractiveClasses,
+                )}
               >
-                {movie.posterUrl && (
+                {movie.posterUrl ? (
                   <img
                     src={movie.posterUrl}
                     alt={movie.title}
                     className="aspect-2/3 w-16 shrink-0 rounded-md object-cover"
                   />
+                ) : (
+                  <MoviePosterFallback className="aspect-2/3 w-16 shrink-0 rounded-md" />
                 )}
                 <span className="flex flex-col gap-1 text-sm">
                   <span className="font-medium">{movie.title}</span>

@@ -60,11 +60,13 @@ describe("MovieSearch", () => {
     await user.type(screen.getByLabelText(/search by title/i), "inception");
     await user.click(screen.getByRole("button", { name: /^search$/i }));
 
-    expect(await screen.findByText(/searching/i)).toBeInTheDocument();
+    expect(await screen.findByRole("list", { busy: true })).toBeInTheDocument();
 
     resolveSearch([]);
     await waitFor(() =>
-      expect(screen.queryByText(/searching/i)).not.toBeInTheDocument(),
+      expect(
+        screen.queryByRole("list", { busy: true }),
+      ).not.toBeInTheDocument(),
     );
   });
 

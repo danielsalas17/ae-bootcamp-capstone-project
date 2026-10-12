@@ -1,12 +1,21 @@
 import { useState, type FormEvent } from "react";
+import { SearchXIcon } from "lucide-react";
 import { searchMovies, type MovieSearchResult } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MovieDetailsDialog } from "@/components/MovieDetailsDialog";
+import {
+  movieCardInteractiveClasses,
+  MoviePosterFallback,
+} from "@/components/movie-card";
+import { cn } from "@/lib/utils";
 
 interface MovieSearchProps {
   onClose: () => void;
 }
+
+const SKELETON_ROW_COUNT = 3;
 
 export function MovieSearch({ onClose }: MovieSearchProps) {
   const [query, setQuery] = useState("");
@@ -55,7 +64,19 @@ export function MovieSearch({ onClose }: MovieSearchProps) {
         </Button>
       </form>
 
-      {loading && <p className="text-muted-foreground text-sm">Searching...</p>}
+      {loading && (
+        <ul className="flex flex-col gap-2" aria-busy="true">
+          {Array.from({ length: SKELETON_ROW_COUNT }).map((_, index) => (
+            <li key={index} className="flex items-center gap-3 p-2">
+              <Skeleton className="h-16 w-11 shrink-0 rounded-md" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-3 w-1/3" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {error && (
         <p className="text-destructive text-sm" role="alert">
@@ -64,7 +85,13 @@ export function MovieSearch({ onClose }: MovieSearchProps) {
       )}
 
       {!loading && !error && results !== null && results.length === 0 && (
-        <p className="text-muted-foreground text-sm">No movies found.</p>
+        <div className="flex flex-col items-center gap-2 py-12 text-center">
+          <SearchXIcon
+            className="text-muted-foreground size-8"
+            aria-hidden="true"
+          />
+          <p className="text-muted-foreground text-sm">No movies found.</p>
+        </div>
       )}
 
       {!loading && !error && results !== null && results.length > 0 && (
@@ -74,16 +101,19 @@ export function MovieSearch({ onClose }: MovieSearchProps) {
               <button
                 type="button"
                 onClick={() => setSelectedMovieId(movie.id)}
-                className="flex w-full items-center gap-3 rounded-md p-2 text-left hover:bg-muted"
+                className={cn(
+                  "flex w-full items-center gap-3 p-2 text-left",
+                  movieCardInteractiveClasses,
+                )}
               >
                 {movie.posterUrl ? (
                   <img
                     src={movie.posterUrl}
                     alt={movie.title}
-                    className="h-16 w-11 rounded object-cover"
+                    className="h-16 w-11 shrink-0 rounded object-cover"
                   />
                 ) : (
-                  <div className="h-16 w-11 rounded bg-muted" />
+                  <MoviePosterFallback className="h-16 w-11 shrink-0 rounded" />
                 )}
                 <span>
                   <span className="block font-medium">{movie.title}</span>

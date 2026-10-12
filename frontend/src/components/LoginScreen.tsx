@@ -30,10 +30,10 @@ export function LoginScreen() {
 
   return (
     <section
-      className="flex w-full max-w-sm flex-col gap-4 text-center"
+      className="bg-card ring-border/60 flex w-full max-w-sm flex-col gap-4 rounded-xl p-6 text-center shadow-sm ring-1"
       aria-label="Log in"
     >
-      <h1 className="text-2xl font-semibold">Welcome</h1>
+      <h1 className="text-4xl font-semibold tracking-tight">Welcome</h1>
       <p className="text-muted-foreground text-sm">
         Enter a username to start tracking movies. No password needed.
       </p>

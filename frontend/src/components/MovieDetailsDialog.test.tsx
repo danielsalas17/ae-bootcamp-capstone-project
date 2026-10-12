@@ -33,7 +33,9 @@ describe("MovieDetailsDialog", () => {
   it("renders nothing visible when closed", () => {
     renderDialog({ movieId: 27205, open: false, onOpenChange: vi.fn() });
 
-    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+    expect(
+      document.querySelector('[data-slot="skeleton"]'),
+    ).not.toBeInTheDocument();
   });
 
   it("shows a loading state, then the movie's details, when open", async () => {
@@ -50,7 +52,9 @@ describe("MovieDetailsDialog", () => {
 
     renderDialog({ movieId: 27205, open: true, onOpenChange: vi.fn() });
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(
+      document.querySelector('[data-slot="skeleton"]'),
+    ).toBeInTheDocument();
     expect(await screen.findByText("Inception")).toBeInTheDocument();
   });
 

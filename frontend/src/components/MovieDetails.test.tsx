@@ -23,9 +23,10 @@ describe("MovieDetails", () => {
     render(<MovieDetails tmdbId={27205} />);
 
     expect(await screen.findByText("Inception")).toBeInTheDocument();
-    expect(screen.getByText(/action, sci-fi/i)).toBeInTheDocument();
+    expect(screen.getByText("Action")).toBeInTheDocument();
+    expect(screen.getByText("Sci-Fi")).toBeInTheDocument();
     expect(screen.getByText(/148 min/i)).toBeInTheDocument();
-    expect(screen.getByText(/rating: 8\.4/i)).toBeInTheDocument();
+    expect(screen.getByText("8.4")).toBeInTheDocument();
   });
 
   it("shows a loading state while the request is in flight", async () => {
@@ -36,9 +37,9 @@ describe("MovieDetails", () => {
       }),
     );
 
-    render(<MovieDetails tmdbId={27205} />);
+    const { container } = render(<MovieDetails tmdbId={27205} />);
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(container.querySelector('[aria-busy="true"]')).toBeInTheDocument();
 
     resolveDetails({
       id: 27205,
@@ -51,7 +52,9 @@ describe("MovieDetails", () => {
       rating: 8.4,
     });
     await waitFor(() =>
-      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument(),
+      expect(
+        container.querySelector('[aria-busy="true"]'),
+      ).not.toBeInTheDocument(),
     );
   });
 
