@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+
+# env files
+.env
+.env.local
+
+# backend local data store (keep structure via data/.gitkeep, ignore runtime db content if desired)
+backend/data/*.json
+!backend/data/.gitkeep
+
+# test/coverage
+coverage/

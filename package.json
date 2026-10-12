@@ -1,0 +1,15 @@
+{
+  "name": "ae-bootcamp-capstone-project",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "build": "pnpm --filter frontend build && pnpm --filter backend build",
+    "test": "pnpm --filter frontend test:run && pnpm --filter backend test",
+    "lint": "pnpm --filter frontend lint && pnpm --filter backend lint"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
