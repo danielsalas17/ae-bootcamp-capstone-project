@@ -1,7 +1,18 @@
 import { Router } from 'express';
 import { searchMovies, getMovieDetails } from '../services/movieService';
+import { getPopularMovies } from '../services/popularMoviesService';
 
 export const moviesRouter = Router();
+
+// Must be registered before '/:imdbId' so 'popular' isn't matched as an imdbId.
+moviesRouter.get('/popular', async (_req, res, next) => {
+  try {
+    const movies = await getPopularMovies();
+    res.json(movies);
+  } catch (err) {
+    next(err);
+  }
+});
 
 moviesRouter.get('/search', async (req, res, next) => {
   const q = (req.query.q as string | undefined)?.trim();
